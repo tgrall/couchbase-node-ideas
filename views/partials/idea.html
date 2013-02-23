@@ -1,0 +1,42 @@
+<div class="container" >
+
+    <div class="row">
+		<div class="span6">
+			<h2>{{entry.title}}</h2>
+		</div>
+		<div class="span6">
+		</div>
+	</div>
+
+    <div class="row">
+		<div class="span6">
+			{{entry.description}}
+		</div>
+		<div class="span6">
+			Number of votes : {{ numberOfVote }}
+			<br>
+			<a href="/#/idea/{{entry.id}}/vote" >Add your vote/comment</a>
+		</div>
+	</div>
+
+    <div class="row">
+		<div class="span8">
+			<br><br>
+			<h3>Comments/Votes</h3>
+		      <table class="table" >
+		        <tbody>
+		          <tr ng-repeat="vote in votes" >
+		            <td >{{vote.value.comment}} by {{vote.value.user_id}}</td>
+					<td>
+					<div ng-show="vote.value.user_id == user  ">
+					<a href="/#/idea/{{entry.id}}/vote/{{vote.value.id}}" class="icon-pencil"></a>
+					<a ng-click="delete(vote)" class="icon-trash"></a>
+					</div>
+					</td>
+		          </tr> 
+		        <tbody>
+			</table>
+		</div>
+	</div>
+</div>
+

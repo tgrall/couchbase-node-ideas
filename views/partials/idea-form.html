@@ -1,0 +1,48 @@
+<div class="container" >
+
+    <div class="row">
+		<div class="span6">
+		<h2>Your Idea</h2>
+		</div>
+	</div>
+    
+	<div class="row">
+		<div class="span10">
+
+
+			<form class="form-horizontal">  
+				<fieldset>  
+
+					<div class="control-group">  
+						<label class="control-label" >Title</label>  
+						<div class="controls">  
+			              <input ng-model="idea.title" class="input-xxlarge" id="title"  />  
+						</div>
+					</div>
+
+					<div class="control-group">  
+						<label class="control-label" >Title</label>  
+						<div class="controls">  
+			              <textarea ng-model="idea.description" class="input-xxlarge" id="description" row="3" />  
+						</div>
+					</div>
+
+		 			<div class="form-actions" >  
+			            <button ng-click="save()" class="btn btn-primary">Save</button>  
+			            <button ng-click="cancel()" class="btn">Cancel</button>  
+			            <button ng-show=" user.id == 14338755  " ng-click="delete()" class="btn">Delete</button>  
+		          	</div>
+					
+				</fieldset>
+			</form>
+
+
+
+		</div>
+	</div>
+
+{{idea}}
+
+</div>
+
+

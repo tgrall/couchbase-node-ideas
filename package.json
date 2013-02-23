@@ -5,6 +5,7 @@
     "dependencies":
     {
         "express": "3.x",
-        "couchbase": "0.0.11"
+        "couchbase": "0.0.11",
+        "ejs": ">= 0.0.1"
     }
 }

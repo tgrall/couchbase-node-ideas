@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' href='/stylesheets/bootstrap/css/bootstrap.min.css'/>
+
+</head>
+<body ng-controller='AppCtrl' >
+	
+<div class="navbar navbar-fixed-top" ng-controller="NavBarController">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="#">Couchbase Ideas</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li class="active"><a href="/">Home</a></li>
+                    <li class="active"><a href="/#/idea/new">New</a></li>
+                </ul>
+            </div><!-- /.nav-collapse -->
+        </div>
+    </div><!-- /navbar-inner -->
+</div>
+
+<div ng-view>
+</div>
+
+
+Test User: <input ng-model="user" class="input" id="user"  />  
+
+</body>
+<script type="text/javascript" src="js/lib/jquery/jquery.js"></script>
+<script src="js/lib/angular/angular.js"></script>
+<script src="stylesheets/bootstrap/js/bootstrap.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/services.js"></script>
+<script src="js/controllers.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/directives.js"></script>
+
+
+
+
+</html>

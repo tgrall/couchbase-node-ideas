@@ -1,5 +1,7 @@
 var express = require('express'),
-	driver = require('couchbase');
+	driver = require('couchbase'),
+	routes = require('./routes')
+	;
 
 dbConfiguration = {
 	"hosts": ["localhost:8091"],
@@ -16,9 +18,31 @@ driver.connect(dbConfiguration, function(err, cb) {
 	var app = module.exports = express();
 	// Configuration
 	app.configure(function() {
+		app.set('views', __dirname + '/views');
+		app.engine('.html', require('ejs').renderFile);
+		app.set('view engine', 'html');
+		app.set('view options', {
+			layout: false
+		});
 		app.use(express.bodyParser());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser());
+		app.use(express.session({
+			secret: 'cb-community-support'
+		}));
+		app.use(app.router);
+		app.use(express.static(__dirname + '/public'));
 	});
 
+	
+	// *** routes
+	app.get('/', routes.index);
+	app.get('/partials/:name', routes.partials);
+
+
+
+	// *** API and Couchbase access ****
+	
 	function get(req, res, docType) {
 		cb.get(req.params.id, function(err, doc, meta) {
 			if (doc != null && doc.type) {
@@ -41,13 +65,28 @@ driver.connect(dbConfiguration, function(err, cb) {
 			var id = req.body.id;
 			if (id == null) {
 				// increment the sequence and save the doc
-				cb.incr("counter:"+req.body.type, function(err, value, meta) {
-					id = req.body.type + ":" + value;
+				if ( docType != "vote" ) {
+					cb.incr("counter:"+req.body.type, function(err, value, meta) {
+						id = req.body.type + ":" + value;
+						req.body.id = id;
+						cb.set(id, req.body, function(err, meta) {
+							res.send(200);
+						});
+					});
+				} else {
+					id = req.body.type + ":" + req.body.user_id +"-"+ req.body.idea_id;
 					req.body.id = id;
 					cb.set(id, req.body, function(err, meta) {
-						res.send(200);
+						var endureOpts = {
+				            persisted: 1,
+				            replicated: 0
+				        };
+						cb.endure(id, endureOpts, function(err, meta) {
+							res.send(200);
+						});						
 					});
-				});
+				}
+				
 			} else {
 				cb.set(id, req.body, function(err, meta) {
 					res.send(200);
@@ -87,6 +126,24 @@ driver.connect(dbConfiguration, function(err, cb) {
 		});		
 	});
 	
+
+	app.get('/api/votes/:id?', function(req, res) {
+		var queryParams = {
+			stale : false,
+			include_docs : true
+		};
+		if (req.params.id != null) {
+		 	queryParams.startkey = req.params.id;
+		 	queryParams.endkey = req.params.id +"zz";
+		}
+		
+		cb.view("dev_ideas", "votes_details_by_idea", queryParams, function(err, view) {
+			res.send(view);
+		});
+		
+		
+	});
+
 	
 	// get document
 	app.get('/api/:type/:id', function(req, res) {
@@ -105,6 +162,14 @@ driver.connect(dbConfiguration, function(err, cb) {
 		} else {
 			res.send(400);
 		}
+	});
+
+	// Delete vote document
+	app.delete('/api/vote/:id', function(req, res) {
+		// Todo test the type
+       	cb.remove(req.params.id, function (err, meta) {
+			res.send(200);
+		});
 	});
 
 	
