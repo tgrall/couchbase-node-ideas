@@ -57,7 +57,7 @@ driver.connect(dbConfiguration, function(err, cb) {
 						}
 					}
 				};
-				cb.createDesignDoc('test-design', ddoc, function(err, resp, data) { 
+				cb.createDesignDoc('ideas', ddoc, function(err, resp, data) { 
 					if (err) { 
 						console.log(err)
 					} else {
@@ -165,7 +165,7 @@ driver.connect(dbConfiguration, function(err, cb) {
 			queryParams.endkey = [req.params.id,2];
 		}
 
-		cb.view("dev_ideas", "votes_by_idea", queryParams, function(err, view) {
+		cb.view("ideas", "votes_by_idea", queryParams, function(err, view) {
 			var result = new Array();
 			var idx = -1;
 			var currentKey = null;
@@ -194,7 +194,7 @@ driver.connect(dbConfiguration, function(err, cb) {
 		 	queryParams.endkey = req.params.id +"zz";
 		}
 		
-		cb.view("dev_ideas", "votes_details_by_idea", queryParams, function(err, view) {
+		cb.view("ideas", "votes_details_by_idea", queryParams, function(err, view) {
 			res.send(view);
 		});
 		
@@ -231,7 +231,7 @@ driver.connect(dbConfiguration, function(err, cb) {
 
 	
 	app.get('/api/idea', function(req, res) {
-		cb.view("dev_ideas", "by_title", {
+		cb.view("ideas", "by_title", {
 			stale: false
 		}, function(err, view) {
 			var keys = new Array();
