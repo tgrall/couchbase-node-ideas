@@ -1,6 +1,7 @@
 var express = require('express'),
 	driver = require('couchbase'),
-	routes = require('./routes')
+	routes = require('./routes'),
+	appVersion = "1.0"
 	;
 
 dbConfiguration = {
@@ -13,6 +14,59 @@ driver.connect(dbConfiguration, function(err, cb) {
 	if (err) {
 		throw (err)
 	}
+
+
+    function initApplication() {
+		console.log("-- Init Application ---")
+		cb.get("app.version", function(err, doc, meta) {
+			if (!doc || doc.version != appVersion) {
+				console.log("\t Installing views for application version "+ appVersion);
+
+				var ddoc = {
+					"views": {
+						"by_title": {
+							"map": "function (doc, meta) { \n"
+							+"  if (doc.type == \"idea\") { \n"
+							+"    emit(doc.title); \n"
+							+"  }\n"
+							+"}\n"
+						},
+						"votes_by_idea" : {
+							"map" : "function (doc, meta) { \n"
+							+"  switch (doc.type){ \n"
+							+"    case \"idea\" : \n"
+							+"      emit([meta.id,0, doc.title],0); \n"
+							+"      break; \n"
+							+"    case \"vote\" : \n"
+							+"      emit([doc.idea_id,1], 1 ); \n"
+							+"      break; \n"
+							+"  } \n"  
+							+"} \n",
+							"reduce" : "_sum"
+						},
+						"votes_details_by_idea" : {
+							"map" : "function (doc, meta) { \n"
+							+"  if (doc.type == \"vote\") { \n"
+							+"    // bad practice to emit the doc \n"
+							+"    // use to work around my nodejs 'inexperience' \n"
+							+"    emit( doc.idea_id , doc ); \n"
+							+"  } \n"
+							+"} \n"
+						}
+					}
+				};
+				cb.createDesignDoc('ideas', ddoc, function(err, resp, data) { 
+					if (err) { 
+						console.log(err)
+					} else {
+						cb.set("app.version",{"type" : "AppVersion", "version" : appVersion}, function(err, meta) {});
+					} 
+				});
+			}
+		});
+    }
+
+	initApplication();
 
 
 	var app = module.exports = express();
@@ -108,7 +162,7 @@ driver.connect(dbConfiguration, function(err, cb) {
 			queryParams.endkey = [req.params.id,2];
 		}
 
-		cb.view("dev_ideas", "votes_by_idea", queryParams, function(err, view) {
+		cb.view("ideas", "votes_by_idea", queryParams, function(err, view) {
 			var result = new Array();
 			var idx = -1;
 			var currentKey = null;
@@ -137,7 +191,7 @@ driver.connect(dbConfiguration, function(err, cb) {
 		 	queryParams.endkey = req.params.id +"zz";
 		}
 		
-		cb.view("dev_ideas", "votes_details_by_idea", queryParams, function(err, view) {
+		cb.view("ideas", "votes_details_by_idea", queryParams, function(err, view) {
 			res.send(view);
 		});
 		
@@ -174,7 +228,7 @@ driver.connect(dbConfiguration, function(err, cb) {
 
 	
 	app.get('/api/idea', function(req, res) {
-		cb.view("dev_ideas", "by_title", {
+		cb.view("ideas", "by_title", {
 			stale: false
 		}, function(err, view) {
 			var keys = new Array();
