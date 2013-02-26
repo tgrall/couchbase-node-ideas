@@ -54,6 +54,34 @@ function IdeaViewCtrl($rootScope, $scope, $routeParams, $http, $location) {
 IdeaViewCtrl.$inject = ['$rootScope', '$scope', '$routeParams','$http', '$location'];
 
 function VoteFormCtrl($rootScope, $scope, $routeParams, $http, $location) {	
+	
+  $scope.ratings = [
+	{
+  	"id": 0,
+  	"label": "0 - No Interest",
+	},
+  	{
+    	"id": 1,
+    	"label": "1 - Low Interest",
+  	},
+  	{
+    	"id": 2,
+    	"label": "2 - Medium",
+  	},
+  	{
+    	"id": 3,
+    	"label": "3 - Good",
+  	},
+  	{
+    	"id": 4,
+    	"label": "4 - Outstanding",
+  	}, 
+  	{
+    	"id": 5,
+    	"label": "5 - Must be done. Now!",
+  	}];
+	
+	
 	$http({method: 'GET', url: '/api/idea/'+ $routeParams.id }).success(function(data, status, headers, config) {			
 			$scope.entry = data;
 		})
@@ -71,6 +99,10 @@ function VoteFormCtrl($rootScope, $scope, $routeParams, $http, $location) {
 	    		$scope.name = 'Error!'
 				console.log("Error in VoteFormCtrl");
 		});
+	}
+
+	if ($scope.entry == null) {
+	 	$scope.entry = {rating : 0}
 	}
 			
 	$scope.save = function() {			

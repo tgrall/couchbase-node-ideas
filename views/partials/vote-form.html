@@ -17,7 +17,16 @@
 		<h4>Add your comment</h4>
 		<form class="well">  
 		  <label>Comment this idea and vote for it</label> 
-		  <textarea ng-model="vote.comment" class="input-xxlarge" id="description"  />  
+		  <textarea ng-model="vote.comment" class="input-xxlarge" id="description"  /> 
+		
+			<div class="control-group">  
+				<label class="control-label" >Rate</label>  
+				<div class="controls">  
+			      <select required ng-model="vote.rating" ng-options="value.id as value.label group by value.group for value in ratings">
+			      </select>
+				</div>
+			</div>		
+		 
 		  <button type="submit" class="btn" ng-click="save()">Submit</button>  
 		</form>
 	</div>
