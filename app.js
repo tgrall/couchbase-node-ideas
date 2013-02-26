@@ -61,7 +61,7 @@ driver.connect(dbConfiguration, function(err, cb) {
 					if (err) { 
 						console.log(err)
 					} else {
-						cb.set("app.version",{"type" : "AppVersion", "version" : "1.1"}, function(err, meta) {});
+						cb.set("app.version",{"type" : "AppVersion", "version" : appVersion}, function(err, meta) {});
 					} 
 				});
 			}
