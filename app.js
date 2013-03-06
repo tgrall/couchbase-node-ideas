@@ -102,6 +102,10 @@ driver.connect(dbConfiguration, function(err, cb) {
 	
 	function get(req, res, docType) {
 		cb.get(req.params.id, function(err, doc, meta) {
+			
+			console.log( err );
+			
+			
 			if (doc != null && doc.type) {
 				if (doc.type == docType) {
 					res.send(doc);
@@ -231,9 +235,11 @@ driver.connect(dbConfiguration, function(err, cb) {
 
 	
 	app.get('/api/idea', function(req, res) {
-		cb.view("ideas", "by_title", {
-			stale: false
-		}, function(err, view) {
+		cb.view("ideas", "by_title", 
+		// {
+		// 	stale: false
+		// },
+		 function(err, view) {
 			var keys = new Array();
 			for (var i = 0; i < view.length; i++) {
 				keys.push(view[i].id);
