@@ -102,10 +102,6 @@ driver.connect(dbConfiguration, function(err, cb) {
 	
 	function get(req, res, docType) {
 		cb.get(req.params.id, function(err, doc, meta) {
-			
-			console.log( err );
-			
-			
 			if (doc != null && doc.type) {
 				if (doc.type == docType) {
 					res.send(doc);
