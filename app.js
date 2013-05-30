@@ -7,10 +7,8 @@ var express = require('express'),
 
 
 dbConfiguration = {
-	"hosts": ["b6imlqnr1ag54c1t.couchbase.clvrcld.net:8091"],
-	"bucket": "b6imlqnr1ag54c1t",
-	"user": "b6imlqnr1ag54c1t",
-	"password": "1dfed72034e349acafc8b2459fff9bd0" 
+	"hosts": ["localhost:8091"],
+	"bucket": "ideas"
 };
 
 
