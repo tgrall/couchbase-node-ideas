@@ -1,7 +1,7 @@
 var express = require('express'),
 	driver = require('couchbase'),
 	routes = require('./routes'),
-	appVersion = "1.1"
+	appVersion = "1.2"
 	;
 
 
@@ -57,7 +57,7 @@ driver.connect(dbConfiguration, function(err, cb) {
 						}
 					}
 				};
-				cb.createDesignDoc('ideas', ddoc, function(err, resp, data) { 
+				cb.setDesignDoc('ideas', ddoc, function(err, resp, data) { 
 					if (err) { 
 						console.log(err)
 					} else {
