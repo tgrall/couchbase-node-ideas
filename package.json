@@ -8,4 +8,5 @@
         "couchbase": "0.0.12",
         "ejs": ">= 0.0.1"
     }
+	"main" : "app.js"
 }
